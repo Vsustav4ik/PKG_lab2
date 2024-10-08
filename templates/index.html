@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Info</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            background-color: #fff;
+            transition: border-color 0.3s;
+            border-radius: 5px;
+        }
+        .upload-area.dragover {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        @media (max-width: 600px) {
+            .upload-area {
+                padding: 20px;
+            }
+            button {
+                width: 100%;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Information</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div id="upload-area" class="upload-area">
+            Drag and drop images here or click to select files
+        </div>
+        <input type="file" id="file-input" name="files[]" multiple>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if images_info %}
+    <h2>Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Size (pixels)</th>
+                <th>DPI</th>
+                <th>Color Depth</th>
+                <th>Compression</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for image in images_info %}
+            <tr>
+                <td>{{ image.filename }}</td>
+                <td>{{ image.size[0] }} x {{ image.size[1] }}</td>
+                <td>{{ image.dpi[0] }} x {{ image.dpi[1] }}</td>
+                <td>{{ image.color_depth }}</td>
+                <td>{{ image.compression }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            fileInput.files = e.dataTransfer.files;
+        });
+    </script>
+</body>
+</html>
